@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beat Grid Mockup</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 40px;
+      color: #111;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 48px;
+    }
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      font-size: 13px;
+      color: #888;
+      list-style: none;
+    }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px;
+    }
+
+    .beat {
+      cursor: pointer;
+    }
+
+    .beat-thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+
+    .beat-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* hover overlay */
+    .beat-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.18s ease;
+    }
+
+    .beat-thumb:hover .beat-overlay {
+      opacity: 1;
+    }
+
+    .play-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .play-btn svg {
+      fill: #fff;
+      margin-left: 3px;
+    }
+
+    .beat-meta {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tag {
+      font-size: 10px;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 2px 7px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+    }
+
+    .beat-name {
+      font-size: 11px;
+      color: #555;
+      margin-top: 8px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ── LABEL ── */
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #bbb;
+      margin-bottom: 24px;
+    }
+
+    /* note */
+    .note {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #aaa;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">YOURNAME</div>
+    <ul class="nav-links">
+      <li>beats</li>
+      <li>contact</li>
+    </ul>
+  </nav>
+
+  <p class="section-label">All Beats</p>
+
+  <div class="grid" id="grid"></div>
+
+  <p class="note">Hover any beat to see the play button, BPM, and key &nbsp;·&nbsp; 6×4 grid (24 beats shown)</p>
+
+<script>
+  const beats = [
+    { name: "DragonFire", bpm: 140, key: "Am", color: "#c9b99a" },
+    { name: "Neon Shadows", bpm: 93, key: "F#m", color: "#9ab3c9" },
+    { name: "Gold Rush", bpm: 120, key: "Cm", color: "#c9c29a" },
+    { name: "Obsidian", bpm: 78, key: "Dm", color: "#a09ab5" },
+    { name: "Static Rain", bpm: 135, key: "Gm", color: "#9ac9b3" },
+    { name: "Voltage", bpm: 144, key: "Em", color: "#c9a09a" },
+    { name: "Midnight Oil", bpm: 88, key: "Bm", color: "#aab8c9" },
+    { name: "Smokescreen", bpm: 100, key: "Am", color: "#c4c9a0" },
+    { name: "Phantom", bpm: 69, key: "Gm", color: "#b09ac9" },
+    { name: "Heatwave", bpm: 150, key: "Dm", color: "#c9a89a" },
+    { name: "Concrete", bpm: 105, key: "Cm", color: "#a0b5c9" },
+    { name: "Wavelength", bpm: 117, key: "F#m", color: "#c9b89a" },
+    { name: "Orbit", bpm: 130, key: "Em", color: "#9ab4c9" },
+    { name: "Cipher", bpm: 87, key: "Am", color: "#c9a0a8" },
+    { name: "Blackout", bpm: 160, key: "Bm", color: "#a8c9a0" },
+    { name: "Frostbyte", bpm: 95, key: "Dm", color: "#a0c9c5" },
+    { name: "Sundial", bpm: 112, key: "Cm", color: "#c9c0a0" },
+    { name: "Shockwave", bpm: 145, key: "Gm", color: "#c9a0bc" },
+    { name: "Undertow", bpm: 80, key: "F#m", color: "#a0a8c9" },
+    { name: "Ignition", bpm: 138, key: "Am", color: "#c9b09a" },
+    { name: "Prism", bpm: 98, key: "Em", color: "#b4c9a0" },
+    { name: "Warzone", bpm: 155, key: "Bm", color: "#c9a0a0" },
+    { name: "Vapor", bpm: 91, key: "Dm", color: "#a0c9b0" },
+    { name: "Overture", bpm: 122, key: "Cm", color: "#c9a0c5" },
+  ];
+
+  const grid = document.getElementById('grid');
+
+  beats.forEach(b => {
+    const el = document.createElement('div');
+    el.className = 'beat';
+    el.innerHTML = `
+      <div class="beat-thumb">
+        <div style="width:100%;height:100%;background:${b.color};"></div>
+        <div class="beat-overlay">
+          <div class="play-btn">
+            <svg width="14" height="16" viewBox="0 0 14 16"><polygon points="0,0 14,8 0,16"/></svg>
+          </div>
+          <div class="beat-meta">
+            <span class="tag">${b.bpm} BPM</span>
+            <span class="tag">${b.key}</span>
+          </div>
+        </div>
+      </div>
+      <div class="beat-name">${b.name}</div>
+    `;
+    grid.appendChild(el);
+  });
+</script>
+</body>
+</html>

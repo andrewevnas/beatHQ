@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BeatHQ v3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #FAFAFA;
+      --ink:     #09090B;
+      --muted:   #71717A;
+      --border:  2px solid #09090B;
+      --gap:     48px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 56px;
+      border-bottom: var(--border);
+    }
+    .logo {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+    .nav-links li {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 150ms;
+    }
+    .nav-links li:hover { color: var(--ink); }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      padding: 0 56px;
+    }
+
+    /* ── ROW ── */
+    .beat-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--gap);
+      padding: var(--gap) 0;
+      border-bottom: var(--border);
+    }
+
+    /* ── BEAT CARD ── */
+    .beat {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .beat-thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      overflow: hidden;
+      background: #18181B;
+    }
+
+    /* subtle texture on placeholder */
+    .beat-thumb::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 3px,
+          rgba(255,255,255,0.03) 3px,
+          rgba(255,255,255,0.03) 6px
+        );
+    }
+
+    /* hover overlay */
+    .beat-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(9,9,11,0.82);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      opacity: 0;
+      transition: opacity 200ms ease;
+    }
+    .beat-thumb:hover .beat-overlay { opacity: 1; }
+
+    .play-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1.5px solid #FAFAFA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .play-btn svg { fill: #FAFAFA; margin-left: 2px; }
+
+    .beat-tags {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      color: #FAFAFA;
+      border: 1px solid rgba(250,250,250,0.4);
+      padding: 2px 6px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .beat-name {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-top: 10px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: var(--border);
+      padding: 18px 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer span {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">BeatHQ</div>
+    <ul class="nav-links">
+      <li>Beats</li>
+      <li>Contact</li>
+    </ul>
+  </nav>
+
+  <main id="main"></main>
+
+  <footer>
+    <span>All Rights Reserved</span>
+    <span>© 2025 BeatHQ</span>
+  </footer>
+
+<script>
+  const beats = [
+    { name: "DragonFire",   bpm: 140, key: "Am"  },
+    { name: "Neon Shadows", bpm: 93,  key: "F#m" },
+    { name: "Gold Rush",    bpm: 120, key: "Cm"  },
+    { name: "Obsidian",     bpm: 78,  key: "Dm"  },
+    { name: "Static Rain",  bpm: 135, key: "Gm"  },
+    { name: "Voltage",      bpm: 144, key: "Em"  },
+    { name: "Midnight Oil", bpm: 88,  key: "Bm"  },
+    { name: "Smokescreen",  bpm: 100, key: "Am"  },
+    { name: "Phantom",      bpm: 69,  key: "Gm"  },
+    { name: "Heatwave",     bpm: 150, key: "Dm"  },
+    { name: "Concrete",     bpm: 105, key: "Cm"  },
+    { name: "Wavelength",   bpm: 117, key: "F#m" },
+  ];
+
+  const main = document.getElementById('main');
+
+  for (let i = 0; i < beats.length; i += 4) {
+    const row = document.createElement('div');
+    row.className = 'beat-row';
+    beats.slice(i, i + 4).forEach(b => {
+      row.innerHTML += `
+        <div class="beat">
+          <div class="beat-thumb">
+            <div class="beat-overlay">
+              <div class="play-btn">
+                <svg width="12" height="14" viewBox="0 0 12 14"><polygon points="0,0 12,7 0,14"/></svg>
+              </div>
+              <div class="beat-tags">
+                <span class="tag">${b.bpm} BPM</span>
+                <span class="tag">${b.key}</span>
+              </div>
+            </div>
+          </div>
+          <div class="beat-name">${b.name}</div>
+        </div>`;
+    });
+    main.appendChild(row);
+  }
+</script>
+</body>
+</html>
