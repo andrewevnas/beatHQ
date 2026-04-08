@@ -1,0 +1,50 @@
+// app/api/checkout/route.ts
+// POST /api/checkout
+// Creates a Stripe Checkout session for a General License purchase.
+// Body: { beatName: string }
+// Returns: { url: string } — the Stripe-hosted checkout URL.
+
+import { NextRequest, NextResponse } from 'next/server';
+import { stripe } from '@/lib/stripe';
+import { env } from '@/lib/env';
+
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  let beatName: unknown;
+  try {
+    const body = await request.json() as Record<string, unknown>;
+    beatName = body['beatName'];
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+  }
+
+  if (typeof beatName !== 'string' || beatName.trim() === '') {
+    return NextResponse.json({ error: 'beatName is required and must be a non-empty string' }, { status: 400 });
+  }
+
+  const origin = request.headers.get('origin') ?? 'http://localhost:3000';
+
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      currency: 'gbp',
+      line_items: [
+        {
+          price_data: {
+            currency: 'gbp',
+            product_data: { name: `General License — ${beatName}` },
+            unit_amount: env.GENERAL_PRICE_PENCE,
+          },
+          quantity: 1,
+        },
+      ],
+      metadata: { beatName },
+      success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/`,
+    });
+
+    return NextResponse.json({ url: session.url });
+  } catch (error) {
+    console.error('[api/checkout] Stripe error:', error);
+    return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 });
+  }
+}
