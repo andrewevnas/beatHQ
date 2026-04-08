@@ -1,7 +1,7 @@
 // components/BeatModal.tsx
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Beat } from '@/lib/types';
 
 interface BeatModalProps {
@@ -12,6 +12,8 @@ interface BeatModalProps {
 
 export default function BeatModal({ beat, producerEmail, onClose }: BeatModalProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -28,6 +30,28 @@ export default function BeatModal({ beat, producerEmail, onClose }: BeatModalPro
   }, []);
 
   const mailtoUrl = `mailto:${producerEmail}?subject=${encodeURIComponent(`Exclusive License — ${beat.name}`)}`;
+
+  async function handleGeneralLicense() {
+    setIsCheckingOut(true);
+    setCheckoutError(null);
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ beatName: beat.slug }),
+      });
+      const data = await res.json() as { url?: string; error?: string };
+      if (!res.ok || !data.url) {
+        setCheckoutError(data.error ?? 'Failed to start checkout');
+        return;
+      }
+      window.location.href = data.url;
+    } catch {
+      setCheckoutError('Network error. Please try again.');
+    } finally {
+      setIsCheckingOut(false);
+    }
+  }
 
   return (
     <div
@@ -69,12 +93,11 @@ export default function BeatModal({ beat, producerEmail, onClose }: BeatModalPro
 
         <div className="flex flex-col gap-3">
           <button
-            className="w-full py-3 text-[11px] font-bold tracking-[2px] uppercase bg-ink text-canvas hover:bg-ink/90 transition-colors duration-150 cursor-pointer"
-            onClick={() => {
-              alert('Stripe checkout — coming in Stage 3');
-            }}
+            className="w-full py-3 text-[11px] font-bold tracking-[2px] uppercase bg-ink text-canvas hover:bg-ink/90 transition-colors duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={handleGeneralLicense}
+            disabled={isCheckingOut}
           >
-            General License — £50
+            {isCheckingOut ? 'Loading...' : 'General License — £50'}
           </button>
 
           <a
@@ -84,6 +107,12 @@ export default function BeatModal({ beat, producerEmail, onClose }: BeatModalPro
             Exclusive License — Enquire
           </a>
         </div>
+
+        {checkoutError !== null && (
+          <p className="mt-3 text-[9px] tracking-[1px] uppercase text-red-600 text-center">
+            {checkoutError}
+          </p>
+        )}
       </div>
     </div>
   );
