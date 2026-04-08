@@ -1,0 +1,8 @@
+// lib/stripe.ts
+// Server-only. Initialises the Stripe SDK client.
+// Import this in API routes — never in client components.
+
+import Stripe from 'stripe';
+import { env } from '@/lib/env';
+
+export const stripe = new Stripe(env.STRIPE_SECRET_KEY);
