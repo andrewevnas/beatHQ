@@ -22,9 +22,8 @@ export default function BeatModal({ beat, producerEmail, onClose }: BeatModalPro
   }, [onClose]);
 
   useEffect(() => {
-    const audio = audioRef.current;
     return () => {
-      audio?.pause();
+      audioRef.current?.pause();
     };
   }, []);
 
