@@ -1,6 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from 'next';
 import { Space_Mono } from 'next/font/google';
+import { headers } from 'next/headers';
 import './globals.css';
 
 const spaceMono = Space_Mono({
@@ -20,8 +21,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const nonce = headers().get('x-nonce') ?? '';
+
   return (
     <html lang="en" className={spaceMono.variable}>
+      <head>
+        {nonce && <meta name="x-nonce" content={nonce} />}
+      </head>
       <body className="bg-canvas text-ink font-mono antialiased">
         {children}
       </body>
