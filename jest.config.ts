@@ -10,6 +10,9 @@ const config: Config = {
   testMatch: ['**/__tests__/**/*.test.ts'],
   coverageDirectory: 'coverage',
   collectCoverageFrom: ['lib/**/*.ts', '!lib/env.ts'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/$1',
+  },
 };
 
 export default createJestConfig(config);
