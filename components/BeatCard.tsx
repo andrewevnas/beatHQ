@@ -14,9 +14,11 @@ interface BeatCardProps {
 
 export default function BeatCard({ beat, onClick }: BeatCardProps) {
   return (
-    <div
-      className="flex flex-col items-center cursor-pointer"
+    <button
+      type="button"
+      className="flex flex-col items-center cursor-pointer bg-transparent border-none p-0 m-0"
       onClick={() => onClick(beat)}
+      aria-label={`Play ${beat.name} — ${beat.bpm} BPM, ${beat.key}`}
     >
       {/* Thumbnail */}
       <div className="relative w-[120px] h-[120px] bg-[#1C1C1E] overflow-hidden group">
@@ -52,6 +54,6 @@ export default function BeatCard({ beat, onClick }: BeatCardProps) {
       <p className="mt-[9px] text-[9px] tracking-[1px] uppercase text-dim text-center w-[120px] truncate font-mono">
         {beat.name}
       </p>
-    </div>
+    </button>
   );
 }
