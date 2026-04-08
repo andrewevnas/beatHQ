@@ -1,6 +1,6 @@
 // __tests__/checkout.test.ts
 jest.mock('@/lib/env', () => ({
-  env: { GENERAL_PRICE_PENCE: 5000 },
+  env: { GENERAL_PRICE_PENCE: 5000, SITE_URL: 'http://localhost:3000' },
 }));
 jest.mock('@/lib/stripe', () => ({
   stripe: {

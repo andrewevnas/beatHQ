@@ -29,6 +29,7 @@ export const env = {
   R2_SECRET_ACCESS_KEY:  requireEnv('R2_SECRET_ACCESS_KEY'),
   R2_BUCKET_NAME:        requireEnv('R2_BUCKET_NAME'),
   R2_PUBLIC_URL:         requireEnv('R2_PUBLIC_URL'),
+  SITE_URL:              requireEnv('SITE_URL'),
   STRIPE_SECRET_KEY:     requireEnv('STRIPE_SECRET_KEY'),
   STRIPE_WEBHOOK_SECRET: requireEnv('STRIPE_WEBHOOK_SECRET'),
   PRODUCER_EMAIL:        requireEnv('PRODUCER_EMAIL'),
