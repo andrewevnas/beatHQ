@@ -58,4 +58,9 @@ describe('getSignedUrls', () => {
     expect(firstCommand.input.Key).toBe('beats/mp3/GoldRush_120bpm_Cm.mp3');
     expect(secondCommand.input.Key).toBe('beats/wav/GoldRush_120bpm_Cm.wav');
   });
+
+  it('throws when slug fails format validation', async () => {
+    await expect(getSignedUrls('../../etc/passwd')).rejects.toThrow('Invalid slug format');
+    expect(mockGetSignedUrl).not.toHaveBeenCalled();
+  });
 });

@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { env } from '@/lib/env';
 
+const SLUG_RE = /^[A-Za-z0-9][A-Za-z0-9\-]*_\d+bpm_[A-Za-z][A-Za-z0-9#b]*$/;
+
 export async function POST(request: NextRequest): Promise<NextResponse> {
   let beatName: unknown;
   try {
@@ -19,6 +21,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   if (typeof beatName !== 'string' || beatName.trim() === '') {
     return NextResponse.json({ error: 'beatName is required and must be a non-empty string' }, { status: 400 });
+  }
+
+  if (!SLUG_RE.test(beatName)) {
+    return NextResponse.json({ error: 'Invalid beat identifier' }, { status: 400 });
   }
 
   const origin = request.headers.get('origin') ?? 'http://localhost:3000';

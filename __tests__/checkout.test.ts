@@ -70,4 +70,16 @@ describe('POST /api/checkout', () => {
     const res = await POST(makeRequest({ beatName: 'DragonFire_140bpm_Am' }));
     expect(res.status).toBe(500);
   });
+
+  it('returns 400 when beatName fails slug format validation', async () => {
+    const res = await POST(makeRequest({ beatName: '../../etc/passwd' }));
+    expect(res.status).toBe(400);
+    expect(mockCreate).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when beatName contains path separators', async () => {
+    const res = await POST(makeRequest({ beatName: 'beats/mp3/hack' }));
+    expect(res.status).toBe(400);
+    expect(mockCreate).not.toHaveBeenCalled();
+  });
 });
