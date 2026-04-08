@@ -1,11 +1,34 @@
 // app/page.tsx
-// Placeholder — replaced in Stage 2 with the beat grid.
-export default function Home() {
+// Server component. Fetches beats from R2 and renders the homepage.
+// Errors from getBeats() (e.g. stub credentials in dev) result in an empty grid.
+
+import Nav from '@/components/Nav';
+import Footer from '@/components/Footer';
+import BeatGrid from '@/components/BeatGrid';
+import { getBeats } from '@/lib/getBeats';
+import type { Beat } from '@/lib/types';
+
+// Force dynamic rendering — beats must always be fresh, never statically cached.
+export const dynamic = 'force-dynamic';
+
+export default async function Home() {
+  let beats: Beat[] = [];
+  try {
+    beats = await getBeats();
+  } catch (error) {
+    // R2 unavailable (stub credentials in dev, or transient error).
+    // Show empty grid rather than crashing.
+    console.error('[page] Failed to load beats:', error);
+  }
+
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <p className="text-sm uppercase tracking-widest text-muted">
-        Stage 1 complete — UI coming in Stage 2
-      </p>
-    </main>
+    <div className="min-h-screen flex flex-col">
+      <Nav />
+      <BeatGrid
+        beats={beats}
+        producerEmail={process.env['PRODUCER_EMAIL'] ?? ''}
+      />
+      <Footer />
+    </div>
   );
 }
