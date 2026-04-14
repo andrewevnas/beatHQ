@@ -71,6 +71,13 @@ describe('POST /api/checkout', () => {
     expect(res.status).toBe(500);
   });
 
+  it('accepts a slug without bpm suffix', async () => {
+    mockCreate.mockResolvedValueOnce({ url: 'https://checkout.stripe.com/pay/abc123' });
+    const res = await POST(makeRequest({ beatName: 'feb1_85_C' }));
+    expect(res.status).toBe(200);
+    expect(mockCreate).toHaveBeenCalled();
+  });
+
   it('returns 400 when beatName fails slug format validation', async () => {
     const res = await POST(makeRequest({ beatName: '../../etc/passwd' }));
     expect(res.status).toBe(400);

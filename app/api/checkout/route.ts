@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { env } from '@/lib/env';
 
-const SLUG_RE = /^[A-Za-z0-9][A-Za-z0-9\-]*_\d+bpm_[A-Za-z][A-Za-z0-9#b]*$/;
+const SLUG_RE = /^[A-Za-z0-9][A-Za-z0-9\-]*_\d+(?:bpm)?_[A-Za-z][A-Za-z0-9#b]*$/;
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   let beatName: unknown;

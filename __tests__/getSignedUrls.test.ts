@@ -59,6 +59,15 @@ describe('getSignedUrls', () => {
     expect(secondCommand.input.Key).toBe('beats/wav/GoldRush_120bpm_Cm.wav');
   });
 
+  it('accepts a slug without bpm suffix', async () => {
+    mockGetSignedUrl
+      .mockResolvedValueOnce('https://r2.example.com/signed-mp3')
+      .mockResolvedValueOnce('https://r2.example.com/signed-wav');
+    const result = await getSignedUrls('feb1_85_C');
+    expect(result.mp3Url).toBe('https://r2.example.com/signed-mp3');
+    expect(mockGetSignedUrl).toHaveBeenCalledTimes(2);
+  });
+
   it('throws when slug fails format validation', async () => {
     await expect(getSignedUrls('../../etc/passwd')).rejects.toThrow('Invalid slug format');
     expect(mockGetSignedUrl).not.toHaveBeenCalled();

@@ -5,6 +5,7 @@
 
 'use client';
 
+import { useState } from 'react';
 import type { Beat } from '@/lib/types';
 
 interface BeatCardProps {
@@ -13,6 +14,15 @@ interface BeatCardProps {
 }
 
 export default function BeatCard({ beat, onClick }: BeatCardProps) {
+  const [imgSrc, setImgSrc] = useState(beat.coverUrl);
+
+  function handleImgError() {
+    // If .jpg fails, try .png once
+    if (imgSrc.endsWith('.jpg')) {
+      setImgSrc(imgSrc.replace(/\.jpg$/, '.png'));
+    }
+  }
+
   return (
     <button
       type="button"
@@ -25,9 +35,10 @@ export default function BeatCard({ beat, onClick }: BeatCardProps) {
         {/* Cover art — dark background shows through on load failure */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={beat.coverUrl}
+          src={imgSrc}
           alt={beat.name}
           className="w-full h-full object-cover"
+          onError={handleImgError}
         />
 
         {/* Hover overlay */}
