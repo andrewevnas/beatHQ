@@ -1,8 +1,9 @@
 // components/BeatModal.tsx
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Beat } from '@/lib/types';
+import AudioPlayer from '@/components/AudioPlayer';
 
 interface BeatModalProps {
   beat: Beat;
@@ -11,7 +12,6 @@ interface BeatModalProps {
 }
 
 export default function BeatModal({ beat, producerEmail, onClose }: BeatModalProps) {
-  const audioRef = useRef<HTMLAudioElement>(null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
@@ -22,13 +22,6 @@ export default function BeatModal({ beat, producerEmail, onClose }: BeatModalPro
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, [onClose]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    return () => {
-      audio?.pause();
-    };
-  }, []);
 
   const mailtoUrl = `mailto:${producerEmail}?subject=${encodeURIComponent(`Exclusive License — ${beat.name}`)}`;
 
@@ -84,13 +77,7 @@ export default function BeatModal({ beat, producerEmail, onClose }: BeatModalPro
           </button>
         </div>
 
-        <audio
-          ref={audioRef}
-          src={beat.previewUrl}
-          controls
-          className="w-full mb-6"
-          aria-label={`Preview: ${beat.name}`}
-        />
+        <AudioPlayer src={beat.previewUrl} label={`Preview: ${beat.name}`} />
 
         <div className="flex flex-col gap-3">
           <button
