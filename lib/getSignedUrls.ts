@@ -18,12 +18,20 @@ export async function getSignedUrls(slug: string): Promise<{ mp3Url: string; wav
   const [mp3Url, wavUrl] = await Promise.all([
     getSignedUrl(
       r2,
-      new GetObjectCommand({ Bucket: BUCKET, Key: `beats/mp3/${slug}.mp3` }),
+      new GetObjectCommand({
+        Bucket: BUCKET,
+        Key: `beats/mp3/${slug}.mp3`,
+        ResponseContentDisposition: `attachment; filename="${slug}.mp3"`,
+      }),
       { expiresIn: EXPIRY_SECONDS }
     ),
     getSignedUrl(
       r2,
-      new GetObjectCommand({ Bucket: BUCKET, Key: `beats/wav/${slug}.wav` }),
+      new GetObjectCommand({
+        Bucket: BUCKET,
+        Key: `beats/wav/${slug}.wav`,
+        ResponseContentDisposition: `attachment; filename="${slug}.wav"`,
+      }),
       { expiresIn: EXPIRY_SECONDS }
     ),
   ]);

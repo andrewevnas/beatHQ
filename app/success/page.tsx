@@ -6,11 +6,12 @@ import { stripe } from '@/lib/stripe';
 import { getSignedUrls } from '@/lib/getSignedUrls';
 
 interface SuccessPageProps {
-  searchParams: { session_id?: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export default async function SuccessPage({ searchParams }: SuccessPageProps) {
-  const sessionId = searchParams['session_id'];
+  const raw = searchParams['session_id'];
+  const sessionId = Array.isArray(raw) ? raw[0] : raw;
 
   if (!sessionId) {
     return <ErrorState message="No payment session found." />;

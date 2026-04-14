@@ -6,6 +6,7 @@ import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import BeatGrid from '@/components/BeatGrid';
 import { getBeats } from '@/lib/getBeats';
+import { env } from '@/lib/env';
 import type { Beat } from '@/lib/types';
 
 // Force dynamic rendering — beats must always be fresh, never statically cached.
@@ -26,7 +27,7 @@ export default async function Home() {
       <Nav />
       <BeatGrid
         beats={beats}
-        producerEmail={process.env['PRODUCER_EMAIL'] ?? ''}
+        producerEmail={env.PRODUCER_EMAIL}
       />
       <Footer />
     </div>
