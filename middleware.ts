@@ -15,7 +15,7 @@ export function middleware(request: NextRequest): NextResponse {
     "font-src 'self'",
     "img-src 'self' data: https:",
     "media-src 'self' https:",
-    "connect-src 'self' https://api.stripe.com",
+    `connect-src 'self' https://api.stripe.com ${process.env.R2_PUBLIC_URL ?? ''}`.trimEnd(),
     "frame-ancestors 'none'",
   ].join('; ');
 

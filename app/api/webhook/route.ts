@@ -8,6 +8,9 @@ import Stripe from 'stripe';
 import { stripe } from '@/lib/stripe';
 import { env } from '@/lib/env';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 // Next.js App Router: must read raw body text to verify Stripe signature.
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const signature = request.headers.get('stripe-signature');

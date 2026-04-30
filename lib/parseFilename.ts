@@ -4,6 +4,7 @@
 // Convention: BeatName_BPMbpm_Key.ext  e.g. DragonFire_140bpm_Am.mp3
 
 import type { ParsedFilename } from '@/lib/types';
+import { isValidSlug } from '@/lib/slug';
 
 export function parseFilename(filename: string): ParsedFilename | null {
   if (!filename) return null;
@@ -27,6 +28,9 @@ export function parseFilename(filename: string): ParsedFilename | null {
 
   // Validate key segment
   if (!rawKey || rawKey.trim() === '') return null;
+
+  // Reject slugs that would fail checkout validation
+  if (!isValidSlug(withoutExt)) return null;
 
   // Display name: replace hyphens with spaces
   const name = rawName.replace(/-/g, ' ');

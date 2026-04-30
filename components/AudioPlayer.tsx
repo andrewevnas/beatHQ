@@ -59,7 +59,7 @@ export default function AudioPlayer({ src, label }: AudioPlayerProps) {
       audio.pause();
       setIsPlaying(false);
     } else {
-      void audio.play();
+      audio.play().catch(() => setIsPlaying(false));
       setIsPlaying(true);
     }
   }

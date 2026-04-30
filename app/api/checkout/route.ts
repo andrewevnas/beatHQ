@@ -7,8 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { env } from '@/lib/env';
-
-const SLUG_RE = /^[A-Za-z0-9][A-Za-z0-9\-]*_\d+(?:bpm)?_[A-Za-z][A-Za-z0-9#b]*$/;
+import { isValidSlug } from '@/lib/slug';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   let beatName: unknown;
@@ -23,7 +22,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'beatName is required and must be a non-empty string' }, { status: 400 });
   }
 
-  if (!SLUG_RE.test(beatName)) {
+  if (!isValidSlug(beatName)) {
     return NextResponse.json({ error: 'Invalid beat identifier' }, { status: 400 });
   }
 
@@ -44,6 +43,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       success_url: `${env.SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${env.SITE_URL}/`,
     });
+
+    if (!session.url) {
+      return NextResponse.json({ error: 'Stripe did not return a checkout URL' }, { status: 500 });
+    }
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
